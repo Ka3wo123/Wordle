@@ -7,9 +7,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.wordle.api.AppUser;
 import org.wordle.api.Statistics;
+import org.wordle.jdbc.DataBaseConnector;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * JavaFX App
@@ -24,11 +28,12 @@ public class App extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
-        // Tak się będzie używało statystyk do danego appUser
-        Statistics statistics = new Statistics(1, "slowo", LocalDateTime.now(), 3);
-        AppUser appUser = new AppUser("Mike", "password", statistics);
-        System.out.println(appUser.statistics().dateOfGame());
+    public static void main(String[] args){
+        List<Statistics> test = DataBaseConnector.getStatisticsByUsername("Test");
+        for (Statistics statistics : test) {
+            System.out.println(statistics);
+        }
+
         launch();
     }
 
