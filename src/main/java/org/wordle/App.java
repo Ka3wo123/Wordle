@@ -34,6 +34,9 @@ public class App extends Application {
             System.out.println(statistics);
         }
 
+        System.out.println(DataBaseConnector.validateCredentials("Test2", "password"));
+
+
         launch();
     }
 

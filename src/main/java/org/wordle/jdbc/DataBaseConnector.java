@@ -6,11 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 public class DataBaseConnector {
 
@@ -44,7 +44,7 @@ public class DataBaseConnector {
     public static List<Statistics> getStatisticsByUsername(String username) {
         connection = connectToDB();
         if(connection == null) {
-            System.out.println("Null jest kurwa");
+            System.out.println("Connection to database failed");
             return null;
         }
         List<Statistics> statistics = new ArrayList<>();
@@ -52,8 +52,8 @@ public class DataBaseConnector {
             PreparedStatement ps = connection.prepareStatement("""
                     SELECT s.game_id, w.word, au.username, s.date_of_game, s.attempts
                     FROM wordle.app_user au
-                    natural join wordle.statistics s
-                    inner join wordle.words w on w.id = s.guessed_word_id
+                    NATURAL JOIN wordle.statistics s
+                    INNER JOIN wordle.words w on w.id = s.guessed_word_id
                     WHERE s.username = ?
                     """);
             ps.setString(1, username);
@@ -73,5 +73,84 @@ public class DataBaseConnector {
         }
 
         return statistics;
+    }
+
+    public static boolean saveNewUser(String username, String password) {
+        connection = connectToDB();
+
+        if (connection == null) {
+            System.out.println("Connection to database failed");
+            return false;
+        }
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("""
+                    INSERT INTO wordle.app_user
+                    VALUES (?, ?)
+                    """);
+            ps.setString(1,username);
+            ps.setString(2,password);
+            ps.executeUpdate();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateCredentials(String username, String password) {
+        connection = connectToDB();
+
+        if (connection == null) {
+            System.out.println("Connection to database failed");
+            return false;
+        }
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("""
+                    SELECT EXISTS(SELECT 1
+                                  FROM wordle.app_user
+                                  WHERE username = ?
+                                 )
+                    """);
+            ps.setString(1, username);
+
+            ResultSet result = ps.executeQuery();
+            result.next();
+
+            if (result.getBoolean(1)) {
+                ps = connection.prepareStatement("""
+                        SELECT au.password
+                        FROM wordle.app_user AS au
+                        WHERE au.username = ?
+                        """);
+                ps.setString(1, username);
+
+                ResultSet resultSet = ps.executeQuery();
+                resultSet.next();
+                String passwordDB = resultSet.getString(1);
+
+                MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+
+                byte[] byteArray = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
+                StringBuilder hexString = new StringBuilder();
+
+                for(byte b : byteArray) {
+                    hexString.append(String.format("%02x", b));
+                }
+                String hashedPassword = hexString.insert(0, "\\x").toString();
+
+                return passwordDB.equals(hashedPassword);
+            } else {
+                return false;
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+
     }
 }
