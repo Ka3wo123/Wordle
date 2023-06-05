@@ -69,7 +69,7 @@ public class DataBaseConnector {
                         resultStatistics.getInt("attempts")));
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            System.out.println(sqle.getMessage());
         }
 
         return statistics;
@@ -92,7 +92,7 @@ public class DataBaseConnector {
             ps.setString(2,password);
             ps.executeUpdate();
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            System.out.println(sqle.getMessage());
             return false;
         }
 
@@ -146,7 +146,7 @@ public class DataBaseConnector {
                 return false;
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            System.out.println(sqle.getMessage());
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }

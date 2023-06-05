@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.wordle.controllers.LoginController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wordle.controllers.LoginController">
+   <children>
+      <Button fx:id="playButton" layoutX="343.0" layoutY="261.0" mnemonicParsing="false" onAction="#checkLoginAndPlay" prefWidth="100.0" text="Play" />
+      <Label alignment="CENTER" layoutX="245.0" layoutY="104.0" prefHeight="27.0" prefWidth="111.0" text="Username">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="245.0" layoutY="159.0" prefHeight="27.0" prefWidth="111.0" text="Password">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="usernameLogin" layoutX="193.0" layoutY="132.0" prefHeight="26.0" prefWidth="215.0" />
+      <Label fx:id="badCredentialsLabel" alignment="CENTER" layoutX="193.0" layoutY="222.0" prefHeight="18.0" prefWidth="215.0" textFill="RED" />
+      <Label fx:id="noCredentialsLabel" alignment="CENTER" layoutX="138.0" layoutY="333.0" prefHeight="18.0" prefWidth="324.0" textFill="RED" />
+      <PasswordField fx:id="passwordLogin" layoutX="193.0" layoutY="187.0" prefHeight="26.0" prefWidth="215.0" />
+      <Label layoutX="166.0" layoutY="33.0" text="WORDLE login page">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <Button fx:id="mainMenuButton" layoutX="167.0" layoutY="261.0" mnemonicParsing="false" onAction="#goToMainMenu" prefWidth="111.0" text="Main menu" />
+   </children>
 </AnchorPane>
