@@ -33,6 +33,12 @@ public class RegisterController {
         String providedUsername = usernameField.getText();
         String providedPassword = passwordField.getText();
 
+        if(providedUsername.isBlank() || providedPassword.isBlank()) {
+            userExistsLabel.setText("Username and password cannot be empty");
+            timelineUserExists.play();
+            return;
+        }
+
         boolean isValid = DataBaseConnector.saveNewUser(providedUsername, providedPassword);
 
         if(!isValid) {
@@ -52,6 +58,7 @@ public class RegisterController {
         FXMLLoader loaderRegister = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/main_menu.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(loaderRegister.load());
+        scene.getStylesheets().add((Objects.requireNonNull(getClass().getResource("/styles.css"))).toExternalForm());
         stage.setScene(scene);
         stage.show();
     }

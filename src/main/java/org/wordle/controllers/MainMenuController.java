@@ -4,8 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,22 +20,27 @@ public class MainMenuController {
         FXMLLoader loaderRegister = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/register.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(loaderRegister.load());
+        scene.getStylesheets().add((Objects.requireNonNull(getClass().getResource("/styles.css"))).toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
     @FXML
     public void login(ActionEvent event) throws IOException {
-        FXMLLoader loaderRegister = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/login.fxml")));
+        FXMLLoader loaderLogin = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/login.fxml")));
+
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(loaderRegister.load());
+        scene = new Scene(loaderLogin.load());
+        scene.getStylesheets().add((Objects.requireNonNull(getClass().getResource("/styles.css"))).toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
     @FXML
     public void play(ActionEvent event) throws IOException {
-        FXMLLoader loaderRegister = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/play.fxml")));
+        FXMLLoader loaderPlay = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/play.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(loaderRegister.load());
+        scene = new Scene(loaderPlay.load());
+        scene.getStylesheets().add((Objects.requireNonNull(getClass().getResource("/styles.css"))).toExternalForm());
         stage.setScene(scene);
         stage.show();
     }

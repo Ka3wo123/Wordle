@@ -1,5 +1,9 @@
 package org.wordle.jdbc;
 
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
 import org.wordle.api.Statistics;
 
 import java.io.File;
@@ -14,9 +18,14 @@ import java.util.*;
 
 public class DataBaseConnector {
 
-    private static Connection connection;
+    private static Connection connection = null;
 
     public static Connection connectToDB() {
+
+        if (connection != null) {
+            return connection;
+        }
+
         String propertiesFilePath = "src/main/resources/app.properties";
 
         Properties properties = new Properties();
@@ -28,26 +37,29 @@ public class DataBaseConnector {
         }
 
         try {
-
-
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(
                     properties.getProperty("datasource.jdbc-url"),
                     properties.getProperty("datasource.username"),
                     properties.getProperty("datasource.password"));
+            System.out.println("""
+                    ********************************
+                    *          DB CONNECTED        *
+                    ********************************
+                    """);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return connection;
     }
 
-    public static List<Statistics> getStatisticsByUsername(String username) {
+    public static ObservableList<Statistics> getStatisticsByUsername(String username) {
         connection = connectToDB();
-        if(connection == null) {
+        if (connection == null) {
             System.out.println("Connection to database failed");
             return null;
         }
-        List<Statistics> statistics = new ArrayList<>();
+        ObservableList<Statistics> statistics = FXCollections.observableArrayList();
         try {
             PreparedStatement ps = connection.prepareStatement("""
                     SELECT s.game_id, w.word, au.username, s.date_of_game, s.attempts
@@ -69,7 +81,7 @@ public class DataBaseConnector {
                         resultStatistics.getInt("attempts")));
             }
         } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage());
+            sqle.printStackTrace();
         }
 
         return statistics;
@@ -88,11 +100,11 @@ public class DataBaseConnector {
                     INSERT INTO wordle.app_user
                     VALUES (?, ?)
                     """);
-            ps.setString(1,username);
-            ps.setString(2,password);
+            ps.setString(1, username);
+            ps.setString(2, password);
             ps.executeUpdate();
         } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage());
+            sqle.printStackTrace();
             return false;
         }
 
@@ -136,7 +148,7 @@ public class DataBaseConnector {
                 byte[] byteArray = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
                 StringBuilder hexString = new StringBuilder();
 
-                for(byte b : byteArray) {
+                for (byte b : byteArray) {
                     hexString.append(String.format("%02x", b));
                 }
                 String hashedPassword = hexString.insert(0, "\\x").toString();
@@ -146,11 +158,111 @@ public class DataBaseConnector {
                 return false;
             }
         } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage());
+            sqle.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
         return false;
+    }
 
+    public static boolean saveStatisticsForUser(String username, String guessedWord, int attempts) {
+        connection = connectToDB();
+
+        if (connection == null) {
+            System.out.println("Connection to database failed");
+            return false;
+        }
+
+        int id;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("""
+                    SELECT w.id
+                    FROM wordle.words w
+                    WHERE w.word = ?
+                    """);
+            ps.setString(1, guessedWord);
+
+            ResultSet resultId = ps.executeQuery();
+            resultId.next();
+            id = resultId.getInt("id");
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return false;
+        }
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("""
+                    INSERT INTO wordle.statistics VALUES
+                    (DEFAULT, ?, ?, now(), ?)
+                    """);
+            ps.setInt(1, id);
+            ps.setString(2, username);
+            ps.setInt(3, attempts);
+
+            ps.executeUpdate();
+
+            return true;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return false;
+    }
+
+    public static String getRandomWord() {
+        connection = connectToDB();
+
+        if (connection == null) {
+            System.out.println("Connection to database failed");
+            return null;
+        }
+
+        Random random = new Random();
+        int randomId = random.nextInt(51) + 1;
+        String word = null;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("""
+                    SELECT w.word
+                    FROM wordle.words AS w
+                    WHERE w.id = ?""");
+            ps.setInt(1, randomId);
+
+            ResultSet result = ps.executeQuery();
+            result.next();
+            word = result.getString("word");
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return word;
+    }
+
+    public static boolean checkIfWordInPoll(String word) {
+        connection = connectToDB();
+
+        if (connection == null) {
+            System.out.println("Connection to database failed");
+            return false;
+        }
+
+        boolean wordExists;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("""
+                    SELECT EXISTS(SELECT 1
+                                  FROM wordle.words
+                                  WHERE word = ?
+                                  )
+                    """);
+            ps.setString(1, word);
+            ResultSet result = ps.executeQuery();
+            result.next();
+            wordExists = result.getBoolean(1);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return false;
+        }
+
+        return wordExists;
     }
 }
