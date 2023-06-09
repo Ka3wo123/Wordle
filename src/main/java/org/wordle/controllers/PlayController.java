@@ -2,12 +2,12 @@ package org.wordle.controllers;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,12 +18,13 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.Duration;
+import org.wordle.api.PropertiesSingleton;
 import org.wordle.jdbc.DataBaseConnector;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -45,23 +46,9 @@ public class PlayController implements Initializable {
     private Button statsButton;
     private int attempt;
     private String randomWord;
-    private String username;
-    private boolean isLogged;
+    private StringProperty prop = PropertiesSingleton.getProperties();
     private final Timeline timelineWarning = new Timeline(new KeyFrame(Duration.seconds(3), event1 -> warningLabel.setText("")));
 
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setLogged(boolean logged) {
-        this.isLogged = logged;
-    }
-
-
-
-    // TODO poprawic kolory liter w zaleznosci od miejsca w wyrazie
-    //  zapisac wynik do tabeli statistics
     @FXML
     public boolean checkWord() {
         attempt++;
@@ -86,12 +73,11 @@ public class PlayController implements Initializable {
                     letterText.setFont(Font.font("Arial", FontWeight.BOLD, 25));
 
                     for (int j = 0; j < randomWord.length(); j++) {
-                        if (providedWord.charAt(i) == randomWord.charAt(j) && i == j) {
+                        if (letter == randomWord.charAt(j) && i == j) {
                             letterText.setFill(Color.GREEN);
                             break;
-                        } else if (providedWord.charAt(i) == randomWord.charAt(j) && i != j) {
+                        } else if (letter == randomWord.charAt(j) && i != j && letterText.getFill() != Color.GREEN) {
                             letterText.setFill(Color.rgb(201, 149, 11));
-                            break;
                         } else {
                             letterText.setFill(Color.BLACK);
                         }
@@ -117,6 +103,13 @@ public class PlayController implements Initializable {
         }
 
         nextWordButton.setDisable(false);
+        warningLabel.setTextFill(Color.GREEN);
+        warningLabel.setText("CORRECT!!!");
+
+
+        if(prop.get() != null) {
+            DataBaseConnector.saveStatisticsForUser(usernameLabel.getText(), providedWord, attempt);
+        }
 
         attempt = 0;
         return true;
@@ -125,14 +118,8 @@ public class PlayController implements Initializable {
     @FXML
     private void goToStatistics(ActionEvent event) throws IOException {
         FXMLLoader loaderStat = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/user_statistics.fxml")));
-        Parent root = loaderStat.load();
-        UserStatisticsController controller = loaderStat.getController();
-        
-        controller.setUsername(username);
-
-
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(loaderStat.load());
         scene.getStylesheets().add((Objects.requireNonNull(getClass().getResource("/styles.css"))).toExternalForm());
         stage.setScene(scene);
         stage.show();
@@ -156,14 +143,19 @@ public class PlayController implements Initializable {
         textFlow.getChildren().clear();
         wordTextField.setText("");
         nextWordButton.setDisable(true);
+        warningLabel.setTextFill(Color.RED);
+        warningLabel.setText("");
 
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         randomWord = DataBaseConnector.getRandomWord();
+        if(prop.get() == null) {
+           statsButton.setVisible(false);
+        }
+        usernameLabel.setText(prop.get());
         System.out.println(randomWord);
-        statsButton.setVisible(isLogged);
         wordInfo.setText(randomWord.length() + " letter word!");
     }
 

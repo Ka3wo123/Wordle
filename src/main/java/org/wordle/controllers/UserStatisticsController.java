@@ -1,18 +1,19 @@
 package org.wordle.controllers;
 
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.wordle.api.PropertiesSingleton;
 import org.wordle.api.Statistics;
 import org.wordle.jdbc.DataBaseConnector;
 
@@ -38,23 +39,13 @@ public class UserStatisticsController implements Initializable {
     private ObservableList<Statistics> statistics;
     @FXML
     private Label userStatsLabel;
-    private String username;
+    private StringProperty props;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    // TODO initialize wykonuje sie wczesniej niz setUsername przez to userStatsLabel jest puste
     @FXML
     private void goPlay(ActionEvent event) throws IOException {
-        FXMLLoader loaderRegister = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/play.fxml")));
-        Parent root = loaderRegister.load();
-        PlayController playController = loaderRegister.getController();
-        loaderRegister.setController(playController);
-
-
+        FXMLLoader loadPlay = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/play.fxml")));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(loadPlay.load());
         scene.getStylesheets().add((Objects.requireNonNull(getClass().getResource("/styles.css"))).toExternalForm());
         stage.setScene(scene);
         stage.show();
@@ -63,8 +54,11 @@ public class UserStatisticsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Initialize");
-        System.out.println(username);
-        statistics = DataBaseConnector.getStatisticsByUsername(username);
+        System.out.println(userStatsLabel.getText());
+        props = PropertiesSingleton.getProperties();
+
+        statistics = DataBaseConnector.getStatisticsByUsername(props.get());
+
 
         columnId.setCellValueFactory(new PropertyValueFactory<>("gameId"));
         columnWord.setCellValueFactory(new PropertyValueFactory<>("guessedWord"));

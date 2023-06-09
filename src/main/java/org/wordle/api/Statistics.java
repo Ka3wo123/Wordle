@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Statistics {
     private int gameId;
@@ -32,8 +33,9 @@ public class Statistics {
         return username;
     }
 
-    public LocalDateTime getDateOfGame() {
-        return dateOfGame;
+    public String getDateOfGame() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        return dateOfGame.format(formatter);
     }
 
     public int getAttemptsOnGame() {

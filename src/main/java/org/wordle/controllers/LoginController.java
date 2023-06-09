@@ -2,17 +2,18 @@ package org.wordle.controllers;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.wordle.api.PropertiesSingleton;
 import org.wordle.jdbc.DataBaseConnector;
 
 import java.io.IOException;
@@ -32,9 +33,6 @@ public class LoginController {
     private final Timeline timelineBadCredentials = new Timeline(new KeyFrame(Duration.seconds(3), event1 -> badCredentialsLabel.setText("")));
     private final Timeline timelineNoCredentials = new Timeline(new KeyFrame(Duration.seconds(3), event1 -> noCredentialsLabel.setText("")));
 
-
-    // TODO trzeba wymyslec jak przekazac dane do kolejnego kontrolera
-
     @FXML
     private void checkLoginAndPlay(ActionEvent event) throws IOException {
         String providedUsername = usernameLogin.getText();
@@ -48,19 +46,13 @@ public class LoginController {
 
             if(isValid) {
 
-                // tu jest przekazanie parametru true żeby pokazało przycisk statystyki
                 FXMLLoader loaderPlay = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/play.fxml")));
-                Parent root = loaderPlay.load();
-                PlayController playController = loaderPlay.getController();
 
-                playController.setLogged(true);
-                playController.setUsername(providedUsername);
-
-
-
+                StringProperty prop = PropertiesSingleton.getProperties();
+                prop.set(providedUsername);
 
                 stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                scene = new Scene(root);
+                scene = new Scene(loaderPlay.load());
                 scene.getStylesheets().add((Objects.requireNonNull(getClass().getResource("/styles.css"))).toExternalForm());
                 stage.setScene(scene);
                 stage.show();
