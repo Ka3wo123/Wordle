@@ -51,7 +51,6 @@ public class PlayController implements Initializable {
 
     @FXML
     public boolean checkWord() {
-        attempt++;
         String providedWord = wordTextField.getText();
         if (providedWord.isBlank()) {
             wordTextField.setText("");
@@ -92,6 +91,7 @@ public class PlayController implements Initializable {
                 if (attempt == 5) {
                     wordInfo.setText("Out of attempts! Word: " + randomWord);
                 }
+                attempt++;
                 return false;
 
             }
