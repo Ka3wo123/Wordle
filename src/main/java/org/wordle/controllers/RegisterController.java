@@ -28,6 +28,9 @@ public class RegisterController {
     private Stage stage;
     private final Timeline timelineUserExists = new Timeline(new KeyFrame(Duration.seconds(3), event1 -> userExistsLabel.setText("")));
 
+    /***
+     * Register new user in database in case username is unique.
+     */
     @FXML
     private void checkRegistrationAndSave(ActionEvent event) throws IOException {
         String providedUsername = usernameField.getText();
@@ -53,6 +56,10 @@ public class RegisterController {
         }
     }
 
+    /***
+     * Returns to main menu scene.
+     * @see MainMenuController
+     */
     @FXML
     private void goToMainMenu(ActionEvent event) throws IOException {
         FXMLLoader loaderRegister = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/main_menu.fxml")));

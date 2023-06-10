@@ -41,6 +41,10 @@ public class UserStatisticsController implements Initializable {
     private Label userStatsLabel;
     private StringProperty props;
 
+    /***
+     * Returns to play controller.
+     * @see PlayController
+     */
     @FXML
     private void goPlay(ActionEvent event) throws IOException {
         FXMLLoader loadPlay = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/play.fxml")));

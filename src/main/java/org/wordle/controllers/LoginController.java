@@ -33,6 +33,11 @@ public class LoginController {
     private final Timeline timelineBadCredentials = new Timeline(new KeyFrame(Duration.seconds(3), event1 -> badCredentialsLabel.setText("")));
     private final Timeline timelineNoCredentials = new Timeline(new KeyFrame(Duration.seconds(3), event1 -> noCredentialsLabel.setText("")));
 
+    /***
+     * Checks user's login and pass him to play scene if provided credentials are valid.
+     * <br>
+     * <b>Since now it saves username in StringProperty singleton. For every login the value is override.</b>
+     */
     @FXML
     private void checkLoginAndPlay(ActionEvent event) throws IOException {
         String providedUsername = usernameLogin.getText();
@@ -64,6 +69,10 @@ public class LoginController {
         }
     }
 
+    /***
+     * Returns to main menu scene.
+     * @see MainMenuController
+     */
     @FXML
     private void goToMainMenu(ActionEvent event) throws IOException {
         FXMLLoader loaderRegister = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/main_menu.fxml")));

@@ -1,18 +1,25 @@
 package org.wordle.api;
 
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/***
+ * POJO class representing app user statistics.
+ * <br>
+ * <b>It needs to be a class with getters instead of record due to requirements of TableView in UserStatisticsController.</b>
+ * @see org.wordle.controllers.UserStatisticsController
+ * @version 1.0
+ */
 public class Statistics {
-    private int gameId;
-    private String guessedWord;
-    private String username;
-    private LocalDateTime dateOfGame;
-    private int attemptsOnGame;
+    private final int gameId;
+    private final String guessedWord;
+    private final String username;
+    private final LocalDateTime dateOfGame;
+    private final int attemptsOnGame;
 
+    /***
+     * Parameterized constructor for statistics
+     */
     public Statistics(int gameId, String guessedWord, String username, LocalDateTime dateOfGame, int attemptsOnGame) {
         this.gameId = gameId;
         this.guessedWord = guessedWord;

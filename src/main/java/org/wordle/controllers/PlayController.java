@@ -24,7 +24,6 @@ import org.wordle.jdbc.DataBaseConnector;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -44,13 +43,20 @@ public class PlayController implements Initializable {
     private Button nextWordButton;
     @FXML
     private Button statsButton;
-    private int attempt;
+    private int attempt = 1;
     private String randomWord;
     private StringProperty prop = PropertiesSingleton.getProperties();
     private final Timeline timelineWarning = new Timeline(new KeyFrame(Duration.seconds(3), event1 -> warningLabel.setText("")));
 
+    /***
+     * Checks provided word by player. Firstly it checks if it is even provided and the length is equal to drawn word.
+     * In next step it searches and checks if provided word is in database.
+     * As long as player has attempts left it loops and paints the letters in adequate colors.
+     * Optionally it saves data of particular play for current user.
+     * @return Only true if the word is guessed.
+     */
     @FXML
-    public boolean checkWord() {
+    private boolean checkWord() {
         String providedWord = wordTextField.getText();
         if (providedWord.isBlank()) {
             wordTextField.setText("");
@@ -88,7 +94,7 @@ public class PlayController implements Initializable {
                     }
                 }
                 wordTextField.setText("");
-                if (attempt == 5) {
+                if (attempt == 6) {
                     wordInfo.setText("Out of attempts! Word: " + randomWord);
                 }
                 attempt++;
@@ -115,6 +121,10 @@ public class PlayController implements Initializable {
         return true;
     }
 
+    /***
+     * Switches to statistics controller.
+     * @see UserStatisticsController
+     */
     @FXML
     private void goToStatistics(ActionEvent event) throws IOException {
         FXMLLoader loaderStat = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/user_statistics.fxml")));
@@ -125,8 +135,12 @@ public class PlayController implements Initializable {
         stage.show();
     }
 
+    /***
+     * Switches to main menu controller.
+     * @see MainMenuController
+     */
     @FXML
-    public void goToMainMenu(ActionEvent event) throws IOException {
+    private void goToMainMenu(ActionEvent event) throws IOException {
         FXMLLoader loaderMainMenu = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/org/fxml/main_menu.fxml")));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(loaderMainMenu.load());
@@ -135,8 +149,11 @@ public class PlayController implements Initializable {
         stage.show();
     }
 
+    /***
+     * Refreshes all and fetches word from database.
+     */
     @FXML
-    public void refresh() {
+    private void refresh() {
         randomWord = DataBaseConnector.getRandomWord();
         wordInfo.setText("");
         wordInfo.setText(randomWord.length() + " letter word!");
@@ -155,7 +172,6 @@ public class PlayController implements Initializable {
            statsButton.setVisible(false);
         }
         usernameLabel.setText(prop.get());
-        System.out.println(randomWord);
         wordInfo.setText(randomWord.length() + " letter word!");
     }
 

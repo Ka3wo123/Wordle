@@ -1,3 +1,7 @@
+/***
+ * Module file
+ */
+
 module org.wordle {
     requires javafx.controls;
     requires javafx.fxml;

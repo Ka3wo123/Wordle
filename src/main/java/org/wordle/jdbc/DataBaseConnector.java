@@ -13,10 +13,18 @@ import java.sql.*;
 import java.util.Properties;
 import java.util.Random;
 
+/***
+ * It has methods necessary for manipulating user's data between app and database.
+ */
 public class DataBaseConnector {
 
     private static Connection connection = null;
 
+    /***
+     * Establishes connection with database.
+     * <br>
+     * Uses data from properties file.
+     */
     public static Connection connectToDB() {
 
         if (connection != null) {
@@ -50,6 +58,11 @@ public class DataBaseConnector {
         return connection;
     }
 
+    /***
+     * Fetches statistics for user.
+     * @return ObservableList to use it in TableView
+     * @see org.wordle.controllers.UserStatisticsController
+     */
     public static ObservableList<Statistics> getStatisticsByUsername(String username) {
         connection = connectToDB();
         if (connection == null) {
@@ -84,6 +97,10 @@ public class DataBaseConnector {
         return statistics;
     }
 
+    /***
+     * Add new user to database.
+     * @return True if operation executed successfully.
+     */
     public static boolean saveNewUser(String username, String password) {
         connection = connectToDB();
 
@@ -108,6 +125,11 @@ public class DataBaseConnector {
         return true;
     }
 
+    /***
+     * Checks if provided username already exists in database.
+     * @see org.wordle.controllers.LoginController
+     * @return True if username exists.
+     */
     public static boolean validateCredentials(String username, String password) {
         connection = connectToDB();
 
@@ -162,6 +184,10 @@ public class DataBaseConnector {
         return false;
     }
 
+    /***
+     * Saves statistics for user.
+     * @return True if operation executed successfully.
+     */
     public static boolean saveStatisticsForUser(String username, String guessedWord, int attempts) {
         connection = connectToDB();
 
@@ -206,6 +232,11 @@ public class DataBaseConnector {
         return false;
     }
 
+    /***
+     * Draws word from database.
+     * <br>
+     * <b>Drawing random ID should be done with COUNT(*) in db</b>
+     */
     public static String getRandomWord() {
         connection = connectToDB();
 
@@ -215,7 +246,7 @@ public class DataBaseConnector {
         }
 
         Random random = new Random();
-        int randomId = random.nextInt(51) + 1;
+        int randomId = random.nextInt(120) + 1;
         String word = null;
 
         try {
@@ -234,6 +265,11 @@ public class DataBaseConnector {
         return word;
     }
 
+    /***
+     * Search and checks if word exists in database.
+     * <br>
+     * <b>Due to manual words inserting it has restrictive amount of words</b>
+     */
     public static boolean checkIfWordInPoll(String word) {
         connection = connectToDB();
 
