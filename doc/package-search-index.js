@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"org.wordle","l":"org.wordle"},{"m":"org.wordle","l":"org.wordle.api"},{"m":"org.wordle","l":"org.wordle.controllers"},{"m":"org.wordle","l":"org.wordle.jdbc"}];updateSearchResults();

@@ -1,0 +1,5 @@
+module:org.wordle
+org.wordle
+org.wordle.api
+org.wordle.controllers
+org.wordle.jdbc

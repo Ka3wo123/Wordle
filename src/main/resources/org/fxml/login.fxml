@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wordle.controllers.LoginController">
+   <children>
+      <Button fx:id="playButton" layoutX="343.0" layoutY="261.0" mnemonicParsing="false" onAction="#checkLoginAndPlay" prefWidth="100.0" text="Play" />
+      <Label alignment="CENTER" layoutX="245.0" layoutY="104.0" prefHeight="27.0" prefWidth="111.0" text="Username">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="245.0" layoutY="159.0" prefHeight="27.0" prefWidth="111.0" text="Password">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="usernameLogin" layoutX="193.0" layoutY="132.0" prefHeight="26.0" prefWidth="215.0" />
+      <Label fx:id="badCredentialsLabel" alignment="CENTER" layoutX="193.0" layoutY="222.0" prefHeight="18.0" prefWidth="215.0" textFill="RED" />
+      <Label fx:id="noCredentialsLabel" alignment="CENTER" layoutX="138.0" layoutY="333.0" prefHeight="18.0" prefWidth="324.0" textFill="RED" />
+      <PasswordField fx:id="passwordLogin" layoutX="193.0" layoutY="187.0" prefHeight="26.0" prefWidth="215.0" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="233.0" layoutY="31.0" text="WORDLE">
+         <font>
+            <Font name="Berlin Sans FB Demi Bold" size="32.0" />
+         </font>
+         <textFill>
+            <LinearGradient cycleMethod="REFLECT" endX="0.6145038022339799" endY="0.4923665004832144" startX="0.45419845872252956" startY="0.7595419865528136">
+               <stops>
+                  <Stop>
+                     <color>
+                        <Color red="0.28970760107040405" green="0.04912280663847923" blue="0.4736842215061188" />
+                     </color>
+                  </Stop>
+                  <Stop offset="1.0">
+                     <color>
+                        <Color red="0.2911890745162964" green="0.8105263113975525" blue="0.6460695266723633" />
+                     </color>
+                  </Stop>
+               </stops>
+            </LinearGradient>
+         </textFill></Label>
+      <Button fx:id="mainMenuButton" layoutX="167.0" layoutY="261.0" mnemonicParsing="false" onAction="#goToMainMenu" prefWidth="111.0" text="Main menu" />
+      <Label layoutX="270.0" layoutY="69.0" text="Login page" />
+   </children>
+</AnchorPane>

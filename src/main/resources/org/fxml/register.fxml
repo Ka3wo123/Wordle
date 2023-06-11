@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wordle.controllers.RegisterController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="233.0" layoutY="31.0" text="WORDLE">
+         <font>
+            <Font name="Berlin Sans FB Demi Bold" size="32.0" />
+         </font>
+         <textFill>
+            <LinearGradient cycleMethod="REFLECT" endX="0.6145038022339799" endY="0.4923665004832144" startX="0.45419845872252956" startY="0.7595419865528136">
+               <stops>
+                  <Stop>
+                     <color>
+                        <Color red="0.28970760107040405" green="0.04912280663847923" blue="0.4736842215061188" />
+                     </color>
+                  </Stop>
+                  <Stop offset="1.0">
+                     <color>
+                        <Color red="0.2911890745162964" green="0.8105263113975525" blue="0.6460695266723633" />
+                     </color>
+                  </Stop>
+               </stops>
+            </LinearGradient>
+         </textFill></Label>
+      <Label layoutX="95.0" layoutY="122.0" text="Username">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="95.0" layoutY="192.0" text="Password">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="usernameField" layoutX="95.0" layoutY="149.0" prefHeight="26.0" prefWidth="385.0" />
+      <Button layoutX="365.0" layoutY="302.0" mnemonicParsing="false" onAction="#checkRegistrationAndSave" prefWidth="111.0" text="Register" />
+      <Button layoutX="95.0" layoutY="302.0" mnemonicParsing="false" onAction="#goToMainMenu" prefWidth="111.0" text="Main menu" />
+      <Label fx:id="userExistsLabel" alignment="CENTER" layoutX="96.0" layoutY="263.0" prefHeight="18.0" prefWidth="386.0" textFill="RED" />
+      <PasswordField fx:id="passwordField" layoutX="94.0" layoutY="219.0" prefHeight="26.0" prefWidth="386.0" />
+      <Label layoutX="253.0" layoutY="69.0" text="Registration page" />
+   </children>
+</AnchorPane>
